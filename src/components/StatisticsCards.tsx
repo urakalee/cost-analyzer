@@ -8,8 +8,9 @@ export function StatisticsCards() {
   const statistics = useTransactionStore(state => state.statistics)
   const threshold = useTransactionStore(state => state.threshold)
   const selectedCategory = useTransactionStore(state => state.selectedCategory)
+  const transactions = useTransactionStore(state => state.transactions)
 
-  const stats = useMemo(() => statistics(), [statistics, threshold, selectedCategory])
+  const stats = useMemo(() => statistics(), [statistics, threshold, selectedCategory, transactions.length])
 
   const cards = [
     {

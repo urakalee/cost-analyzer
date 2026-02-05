@@ -8,8 +8,9 @@ export function ExportButtons() {
   const filteredTransactions = useTransactionStore(state => state.filteredTransactions)
   const threshold = useTransactionStore(state => state.threshold)
   const selectedCategory = useTransactionStore(state => state.selectedCategory)
+  const transactions = useTransactionStore(state => state.transactions)
 
-  const data = useMemo(() => filteredTransactions(), [filteredTransactions, threshold, selectedCategory])
+  const data = useMemo(() => filteredTransactions(), [filteredTransactions, threshold, selectedCategory, transactions.length])
 
   const handleExportExcel = () => {
     if (data.length === 0) return

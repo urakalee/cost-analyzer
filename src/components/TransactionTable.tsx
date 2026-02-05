@@ -24,12 +24,13 @@ export function TransactionTable() {
   const threshold = useTransactionStore(state => state.threshold)
   const selectedCategory = useTransactionStore(state => state.selectedCategory)
   const filteredTransactions = useTransactionStore(state => state.filteredTransactions)
+  const transactions = useTransactionStore(state => state.transactions)
 
   const [sorting, setSorting] = useState<SortingState>([{ id: 'time', desc: true }])
   const [editingId, setEditingId] = useState<string | null>(null)
 
-  // 重新计算数据（依赖阈值和分类变化）
-  const data = useMemo(() => filteredTransactions(), [filteredTransactions, threshold, selectedCategory])
+  // 重新计算数据（依赖原始数据、阈值和分类变化）
+  const data = useMemo(() => filteredTransactions(), [filteredTransactions, threshold, selectedCategory, transactions.length])
 
   const handleUpdateNote = useCallback((id: string, note: string) => {
     updateNote(id, note)

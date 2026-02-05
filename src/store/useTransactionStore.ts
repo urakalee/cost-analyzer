@@ -39,10 +39,12 @@ export const useTransactionStore = create<TransactionStore>((set, get) => ({
   _lastThreshold: 500,
   _lastCategory: '全部分类',
 
-  setTransactions: (transactions) => set({
+  setTransactions: (transactions) => set((state) => ({
     transactions,
-    _filteredCache: null // 清除缓存
-  }),
+    _filteredCache: null, // 清除缓存
+    _lastThreshold: -1, // 强制重新计算
+    _lastCategory: '', // 强制重新计算
+  })),
 
   updateNote: (id, note) =>
     set((state) => ({
