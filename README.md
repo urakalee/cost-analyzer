@@ -1,4 +1,4 @@
-# Cost Analyzer - 成本分析工具
+# Cost Analyzer - 支出分析工具
 
 一个纯前端的账单分析工具，用于分析微信/支付宝/京东账单，筛选大额支出并导出分析结果。
 
@@ -34,27 +34,33 @@ npm run build
 
 构建后的文件在 `dist/` 目录，可以直接部署或分享。
 
-### 获取独立版本（不需要npm）
+### 获取独立版本（不需要npm）✨
 
-构建完成后，`dist/` 目录包含一个完整的独立版本：
+构建完成后，`dist/index.html` 是一个**单文件HTML**应用：
 
 ```bash
-# 进入dist目录
-cd dist
-
-# 启动HTTP服务器
-python3 -m http.server 8080
-
-# 访问 http://localhost:8080
+npm run build
 ```
 
 **特点：**
-- ✅ 不需要npm或Node.js
-- ✅ 可以压缩打包分享
-- ✅ 可以部署到任何静态服务器
-- ✅ 总大小仅 ~712 KB
+- ✅ **单文件HTML** - 所有代码内联在一个730KB的文件中
+- ✅ **双击即用** - 无需HTTP服务器，直接打开index.html
+- ✅ **极易分享** - 只需发送一个HTML文件
+- ✅ **完全离线** - 无需网络连接
+- ✅ **隐私安全** - 所有数据本地处理
 
-详见 `dist/README.md` 了解更多部署方式。
+**使用方法：**
+```bash
+# 方法1：直接双击（推荐）
+open dist/index.html
+
+# 方法2：使用HTTP服务器（如果方法1有问题）
+cd dist && python3 -m http.server 8080
+```
+
+**测试数据：**
+- 项目根目录的 `sample-data/` 包含测试账单文件
+- 可以拖拽到打开的应用中测试
 
 ### 运行测试
 

@@ -20,7 +20,7 @@ function App() {
             </div>
             <div>
               <h1 className="text-2xl font-bold">Cost Analyzer</h1>
-              <p className="text-sm text-muted-foreground">成本分析工具</p>
+              <p className="text-sm text-muted-foreground">支出分析工具</p>
             </div>
           </div>
         </div>
