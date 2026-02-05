@@ -1,6 +1,6 @@
 import Papa from 'papaparse'
 import { Transaction, ParseResult } from '@/types/transaction'
-import { parseAmount, generateId } from '@/utils/formatters'
+import { parseAmount, generateId, calculateNetAmount } from '@/utils/formatters'
 
 export const parseAlipayCSV = async (file: File): Promise<ParseResult> => {
   const errors: string[] = []
@@ -96,16 +96,27 @@ export const parseAlipayCSV = async (file: File): Promise<ParseResult> => {
       }
 
       try {
+        const status = row[statusIdx]?.toString().trim() || ''
+        const originalAmount = parseAmount(row[amountIdx]?.toString().trim() || '0')
+
+        // 计算净金额（扣除退款）
+        const netAmount = calculateNetAmount(originalAmount, status)
+
+        // 全额退款的交易过滤掉
+        if (netAmount === null) {
+          continue
+        }
+
         const transaction: Transaction = {
           id: generateId(),
           platform: 'alipay',
           time: row[timeIdx]?.toString().trim() || '',
           merchant: row[merchantIdx]?.toString().trim() || '',
           product: row[productIdx]?.toString().trim() || '',
-          amount: parseAmount(row[amountIdx]?.toString().trim() || '0'),
+          amount: netAmount, // 使用净金额
           category: row[categoryIdx]?.toString().trim() || '未分类',
           paymentMethod: row[paymentIdx]?.toString().trim() || '',
-          status: row[statusIdx]?.toString().trim() || '',
+          status: status,
           transactionId: row[transactionIdIdx]?.toString().trim() || '',
           merchantOrderId: row[merchantOrderIdIdx]?.toString().trim() || '',
           note: '',

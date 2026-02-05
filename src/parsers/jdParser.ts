@@ -1,6 +1,6 @@
 import Papa from 'papaparse'
 import { Transaction, ParseResult } from '@/types/transaction'
-import { parseAmount, generateId } from '@/utils/formatters'
+import { parseAmount, generateId, calculateNetAmount } from '@/utils/formatters'
 
 export const parseJDCSV = async (file: File): Promise<ParseResult> => {
   const errors: string[] = []
@@ -49,16 +49,27 @@ export const parseJDCSV = async (file: File): Promise<ParseResult> => {
       if (type !== '支出') continue
 
       try {
+        const status = row[5]?.trim() || ''
+        const originalAmount = parseAmount(row[3]?.trim() || '0')
+
+        // 计算净金额（扣除退款）
+        const netAmount = calculateNetAmount(originalAmount, status)
+
+        // 全额退款的交易过滤掉
+        if (netAmount === null) {
+          continue
+        }
+
         const transaction: Transaction = {
           id: generateId(),
           platform: 'jd',
           time: row[0]?.trim() || '',
           merchant: row[1]?.trim() || '',
           product: row[2]?.trim() || '',
-          amount: parseAmount(row[3]?.trim() || '0'),
+          amount: netAmount, // 使用净金额
           category: row[7]?.trim() || '未分类',
           paymentMethod: row[4]?.trim() || '',
-          status: row[5]?.trim() || '',
+          status: status,
           transactionId: row[8]?.trim() || '',
           merchantOrderId: row[9]?.trim() || '',
           note: '',

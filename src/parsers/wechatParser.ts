@@ -1,6 +1,6 @@
 import * as XLSX from 'xlsx'
 import { Transaction, ParseResult } from '@/types/transaction'
-import { parseAmount, generateId } from '@/utils/formatters'
+import { parseAmount, generateId, calculateNetAmount } from '@/utils/formatters'
 
 export const parseWechatExcel = async (file: File): Promise<ParseResult> => {
   const errors: string[] = []
@@ -37,6 +37,16 @@ export const parseWechatExcel = async (file: File): Promise<ParseResult> => {
 
       try {
         const amountStr = row[5]?.toString() || '0'
+        const status = row[7]?.toString().trim() || ''
+        const originalAmount = parseAmount(amountStr)
+
+        // 计算净金额（扣除退款）
+        const netAmount = calculateNetAmount(originalAmount, status)
+
+        // 全额退款的交易过滤掉
+        if (netAmount === null) {
+          continue
+        }
 
         const transaction: Transaction = {
           id: generateId(),
@@ -44,10 +54,10 @@ export const parseWechatExcel = async (file: File): Promise<ParseResult> => {
           time: row[0]?.toString().trim() || '',
           merchant: row[2]?.toString().trim() || '',
           product: row[3]?.toString().trim() || '',
-          amount: parseAmount(amountStr),
+          amount: netAmount, // 使用净金额
           category: row[1]?.toString().trim() || '未分类',
           paymentMethod: row[6]?.toString().trim() || '',
-          status: row[7]?.toString().trim() || '',
+          status: status,
           transactionId: row[8]?.toString().trim() || '',
           merchantOrderId: row[9]?.toString().trim() || '',
           note: '',

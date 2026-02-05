@@ -18,8 +18,6 @@ interface ExportData {
   金额: number
   支付方式: string
   交易状态: string
-  交易订单号: string
-  商户订单号: string
   备注: string
 }
 
@@ -33,8 +31,6 @@ function transformTransactions(transactions: Transaction[]): ExportData[] {
     金额: t.amount,
     支付方式: t.paymentMethod,
     交易状态: t.status,
-    交易订单号: t.transactionId,
-    商户订单号: t.merchantOrderId,
     备注: t.note,
   }))
 }
@@ -61,8 +57,6 @@ export function exportToExcel(transactions: Transaction[]) {
     { wch: 12 }, // 金额
     { wch: 20 }, // 支付方式
     { wch: 12 }, // 交易状态
-    { wch: 25 }, // 交易订单号
-    { wch: 30 }, // 商户订单号
     { wch: 30 }, // 备注
   ]
   worksheet['!cols'] = columnWidths
