@@ -4,8 +4,11 @@ import { Input } from './ui/input'
 import { Select } from './ui/select'
 
 export function FilterBar() {
-  const { threshold, selectedCategory, categories, setThreshold, setSelectedCategory } =
-    useTransactionStore()
+  const threshold = useTransactionStore(state => state.threshold)
+  const selectedCategory = useTransactionStore(state => state.selectedCategory)
+  const categories = useTransactionStore(state => state.categories)
+  const setThreshold = useTransactionStore(state => state.setThreshold)
+  const setSelectedCategory = useTransactionStore(state => state.setSelectedCategory)
 
   // 本地状态用于即时显示输入值
   const [localThreshold, setLocalThreshold] = useState(threshold.toString())
@@ -59,7 +62,7 @@ export function FilterBar() {
           onChange={(e) => setSelectedCategory(e.target.value)}
           className="w-48"
         >
-          {categories().map((cat) => (
+          {categories.map((cat) => (
             <option key={cat} value={cat}>
               {cat}
             </option>

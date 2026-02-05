@@ -1,16 +1,10 @@
-import { useMemo } from 'react'
 import { useTransactionStore } from '@/store/useTransactionStore'
 import { exportToExcel, exportToCSV } from '@/utils/export'
 import { Button } from './ui/button'
 import { FileSpreadsheet, FileText } from 'lucide-react'
 
 export function ExportButtons() {
-  const filteredTransactions = useTransactionStore(state => state.filteredTransactions)
-  const threshold = useTransactionStore(state => state.threshold)
-  const selectedCategory = useTransactionStore(state => state.selectedCategory)
-  const transactions = useTransactionStore(state => state.transactions)
-
-  const data = useMemo(() => filteredTransactions(), [filteredTransactions, threshold, selectedCategory, transactions.length])
+  const data = useTransactionStore(state => state.filteredTransactions)
 
   const handleExportExcel = () => {
     if (data.length === 0) return

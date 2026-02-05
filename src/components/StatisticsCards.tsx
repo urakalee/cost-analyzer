@@ -5,12 +5,15 @@ import { Card, CardContent } from './ui/card'
 import { TrendingUp, Hash, DollarSign, Award } from 'lucide-react'
 
 export function StatisticsCards() {
-  const statistics = useTransactionStore(state => state.statistics)
-  const threshold = useTransactionStore(state => state.threshold)
-  const selectedCategory = useTransactionStore(state => state.selectedCategory)
-  const transactions = useTransactionStore(state => state.transactions)
+  const filteredTransactions = useTransactionStore(state => state.filteredTransactions)
 
-  const stats = useMemo(() => statistics(), [statistics, threshold, selectedCategory, transactions.length])
+  const stats = useMemo(() => {
+    const count = filteredTransactions.length
+    const total = filteredTransactions.reduce((sum, t) => sum + t.amount, 0)
+    const average = count > 0 ? total / count : 0
+    const max = count > 0 ? Math.max(...filteredTransactions.map((t) => t.amount)) : 0
+    return { count, total, average, max }
+  }, [filteredTransactions])
 
   const cards = [
     {

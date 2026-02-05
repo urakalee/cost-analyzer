@@ -55,6 +55,8 @@ describe('useTransactionStore', () => {
       threshold: 500,
       selectedCategory: '全部分类',
       platform: null,
+      filteredTransactions: [],
+      categories: ['全部分类'],
     })
   })
 
@@ -76,7 +78,7 @@ describe('useTransactionStore', () => {
     store.setTransactions(mockTransactions)
     store.setThreshold(500)
 
-    const filtered = store.filteredTransactions()
+    const filtered = useTransactionStore.getState().filteredTransactions
     expect(filtered).toHaveLength(2) // 600 and 800
     expect(filtered.every(t => t.amount >= 500)).toBe(true)
   })
@@ -87,7 +89,7 @@ describe('useTransactionStore', () => {
     store.setThreshold(0)
     store.setSelectedCategory('餐饮')
 
-    const filtered = store.filteredTransactions()
+    const filtered = useTransactionStore.getState().filteredTransactions
     expect(filtered).toHaveLength(2)
     expect(filtered.every(t => t.category === '餐饮')).toBe(true)
   })
@@ -98,7 +100,7 @@ describe('useTransactionStore', () => {
     store.setThreshold(700)
     store.setSelectedCategory('餐饮')
 
-    const filtered = store.filteredTransactions()
+    const filtered = useTransactionStore.getState().filteredTransactions
     expect(filtered).toHaveLength(1)
     expect(filtered[0].id).toBe('3')
   })
@@ -108,18 +110,23 @@ describe('useTransactionStore', () => {
     store.setTransactions(mockTransactions)
     store.setThreshold(500)
 
-    const stats = store.statistics()
-    expect(stats.count).toBe(2)
-    expect(stats.total).toBe(1400)
-    expect(stats.average).toBe(700)
-    expect(stats.max).toBe(800)
+    const filtered = useTransactionStore.getState().filteredTransactions
+    const count = filtered.length
+    const total = filtered.reduce((sum, t) => sum + t.amount, 0)
+    const average = count > 0 ? total / count : 0
+    const max = count > 0 ? Math.max(...filtered.map((t) => t.amount)) : 0
+
+    expect(count).toBe(2)
+    expect(total).toBe(1400)
+    expect(average).toBe(700)
+    expect(max).toBe(800)
   })
 
   it('should extract unique categories', () => {
     const store = useTransactionStore.getState()
     store.setTransactions(mockTransactions)
 
-    const categories = store.categories()
+    const categories = useTransactionStore.getState().categories
     expect(categories).toContain('全部分类')
     expect(categories).toContain('餐饮')
     expect(categories).toContain('购物')
