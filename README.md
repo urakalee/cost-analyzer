@@ -32,6 +32,30 @@ npm run dev
 npm run build
 ```
 
+构建后的文件在 `dist/` 目录，可以直接部署或分享。
+
+### 获取独立版本（不需要npm）
+
+构建完成后，`dist/` 目录包含一个完整的独立版本：
+
+```bash
+# 进入dist目录
+cd dist
+
+# 启动HTTP服务器
+python3 -m http.server 8080
+
+# 访问 http://localhost:8080
+```
+
+**特点：**
+- ✅ 不需要npm或Node.js
+- ✅ 可以压缩打包分享
+- ✅ 可以部署到任何静态服务器
+- ✅ 总大小仅 ~712 KB
+
+详见 `dist/README.md` 了解更多部署方式。
+
 ### 运行测试
 
 ```bash

@@ -4,7 +4,6 @@ import { useTransactionStore } from '@/store/useTransactionStore'
 import { parseFile } from '@/parsers'
 import { detectPlatform } from '@/utils/formatters'
 import { Platform } from '@/types/transaction'
-import { Button } from './ui/button'
 import { Select } from './ui/select'
 
 export function FileUploader() {

@@ -12,17 +12,16 @@ export const parseJDCSV = async (file: File): Promise<ParseResult> => {
     const parseResult = Papa.parse(text, {
       delimiter: ',',
       skipEmptyLines: true,
-      encoding: 'UTF-8',
       comments: false,
     })
 
     if (parseResult.errors.length > 0) {
       // 过滤掉分隔符警告（不是真正的错误）
-      const realErrors = parseResult.errors.filter(e =>
+      const realErrors = parseResult.errors.filter((e: any) =>
         e.type !== 'Delimiter' && e.code !== 'UndetectableDelimiter'
       )
       if (realErrors.length > 0) {
-        errors.push(...realErrors.map(e => e.message))
+        errors.push(...realErrors.map((e: any) => e.message))
       }
     }
 
