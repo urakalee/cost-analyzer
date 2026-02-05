@@ -151,9 +151,79 @@ npm run test -- --coverage
 - ✅ 不使用任何第三方追踪
 - ✅ 不保存历史记录（刷新页面数据清空）
 
-## 📝 开发日志
+## 🔧 核心技术方案
 
-完整的开发过程和需求分析请参考 [PRD.md](./PRD.md)
+### 支付宝GBK编码处理
+
+```typescript
+// 使用浏览器原生API处理GBK编码
+const decoder = new TextDecoder('gb18030')
+let text = decoder.decode(bytes)
+
+// 关键：标准化换行符（GBK文件使用\r\n，PapaParse需要\n）
+text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n')
+```
+
+### React状态管理优化
+
+```typescript
+// 预计算派生状态，避免渲染期间更新（遵循React规则）
+interface Store {
+  transactions: Transaction[]
+  filteredTransactions: Transaction[]  // 预计算属性，非函数
+
+  setThreshold: (threshold) => {
+    const filtered = computeFiltered(...)
+    set({ threshold, filteredTransactions: filtered })  // 仅在action中更新
+  }
+}
+```
+
+### 输入防抖优化
+
+```typescript
+// 500ms防抖，避免频繁重新计算和渲染
+const [localThreshold, setLocalThreshold] = useState(threshold)
+
+useEffect(() => {
+  const timer = setTimeout(() => setThreshold(localThreshold), 500)
+  return () => clearTimeout(timer)
+}, [localThreshold])
+```
+
+## 📋 工程原则
+
+本项目严格遵循软件工程最佳实践：
+
+- **KISS原则** - 纯前端架构，无不必要的复杂度
+- **DRY原则** - 统一类型定义，共用工具函数，预计算避免重复
+- **YAGNI原则** - 仅实现明确需求，拒绝过度设计
+- **SOLID原则** - 单一职责、开闭扩展、依赖倒置
+
+## 🧪 测试覆盖
+
+```
+✓ src/utils/__tests__/export.test.ts (2 tests)
+✓ src/store/__tests__/useTransactionStore.test.ts (8 tests)
+✓ src/parsers/__tests__/formatters.test.ts (10 tests)
+
+Test Files  3 passed (3)
+Tests       20 passed (20)
+```
+
+## 🐛 已解决的技术挑战
+
+详见 [PRD.md - 技术问题与解决方案](./PRD.md#九技术问题与解决方案)：
+
+1. ✅ 支付宝CSV换行符解析问题
+2. ✅ React渲染期间setState警告
+3. ✅ 阈值输入卡顿优化
+4. ✅ 文件上传后列表刷新问题
+
+## 📝 文档
+
+- [PRD.md](./PRD.md) - 完整的产品需求文档，包含技术方案和问题解决记录
+- [TypeScript类型定义](./src/types/transaction.ts) - 数据结构定义
 
 ## 🤝 贡献
 
@@ -162,3 +232,9 @@ npm run test -- --coverage
 ## 📄 许可证
 
 MIT License
+
+---
+
+**开发状态：** ✅ 生产就绪
+**测试状态：** ✅ 20/20 通过
+**最后更新：** 2026-02-05
