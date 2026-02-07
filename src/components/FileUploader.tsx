@@ -1,10 +1,12 @@
 import { useCallback, useState } from 'react'
-import { Upload, AlertCircle } from 'lucide-react'
+import { Upload, AlertCircle, HelpCircle } from 'lucide-react'
 import { useTransactionStore } from '@/store/useTransactionStore'
 import { parseFile } from '@/parsers'
 import { detectPlatform } from '@/utils/formatters'
 import { Platform } from '@/types/transaction'
 import { Select } from './ui/select'
+import { Button } from './ui/button'
+import { HelpModal } from './HelpModal'
 
 export function FileUploader() {
   const [isDragging, setIsDragging] = useState(false)
@@ -12,6 +14,7 @@ export function FileUploader() {
   const [error, setError] = useState<string | null>(null)
   const [detectedPlatform, setDetectedPlatform] = useState<Platform | null>(null)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [showHelp, setShowHelp] = useState(false)
 
   const { setTransactions, setPlatform } = useTransactionStore()
 
@@ -87,6 +90,19 @@ export function FileUploader() {
 
   return (
     <div className="w-full">
+      <div className="flex items-center justify-between mb-2">
+        <div></div>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setShowHelp(true)}
+          className="h-8 w-8"
+          title="查看账单导出指引"
+        >
+          <HelpCircle className="h-4 w-4" />
+        </Button>
+      </div>
+
       <div
         onDrop={handleDrop}
         onDragOver={handleDragOver}
@@ -144,6 +160,8 @@ export function FileUploader() {
           <p className="text-sm text-destructive">{error}</p>
         </div>
       )}
+
+      <HelpModal open={showHelp} onOpenChange={setShowHelp} />
     </div>
   )
 }
